@@ -1,0 +1,12 @@
+{
+  "$schema": "../../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "name": "strapi",
+  "version": "0.0.1",
+  "schematics": {
+    "strapi": {
+      "factory": "./src/schematics/strapi/schematic",
+      "schema": "./src/schematics/strapi/schema.json",
+      "description": "strapi schematic"
+    }
+  }
+}
