@@ -7,6 +7,12 @@
       "factory": "./src/schematics/strapi/schematic",
       "schema": "./src/schematics/strapi/schema.json",
       "description": "strapi schematic"
+    },
+    "application": {
+      "factory": "./src/schematics/application/inded",
+      "schema": "./src/schematics/application/schema.json",
+      "description": "strapi app schematic",
+      "aliases": ["app"]
     }
   }
 }
