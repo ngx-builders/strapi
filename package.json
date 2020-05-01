@@ -5,9 +5,9 @@
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
-    "build": "nx build",
+    "build": "nx run strapi:build",
     "test": "nx test",
-    "lint": "nx workspace-lint && nx lint",
+    "lint": "nx workspace-lint && nx lint strapi",
     "e2e": "nx e2e",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
@@ -28,22 +28,37 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@nrwl/eslint-plugin-nx": "9.2.3",
+    "@nrwl/jest": "9.2.3",
     "@nrwl/nx-plugin": "9.2.3",
     "@nrwl/workspace": "9.2.3",
+    "@types/jest": "25.1.4",
     "@types/node": "~8.9.4",
+    "@typescript-eslint/eslint-plugin": "2.19.2",
+    "@typescript-eslint/parser": "2.19.2",
+    "cz-conventional-changelog": "^3.1.0",
     "dotenv": "6.2.0",
     "eslint": "6.8.0",
+    "eslint-config-prettier": "6.0.0",
+    "husky": "^4.2.5",
+    "jest": "25.2.3",
     "prettier": "1.19.1",
+    "ts-jest": "25.2.1",
     "ts-node": "~7.0.0",
     "tslint": "~6.0.0",
-    "typescript": "~3.8.3",
-    "@nrwl/eslint-plugin-nx": "9.2.3",
-    "@typescript-eslint/parser": "2.19.2",
-    "@typescript-eslint/eslint-plugin": "2.19.2",
-    "eslint-config-prettier": "6.0.0",
-    "@nrwl/jest": "9.2.3",
-    "jest": "25.2.3",
-    "@types/jest": "25.1.4",
-    "ts-jest": "25.2.1"
+    "typescript": "~3.8.3"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run lint"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

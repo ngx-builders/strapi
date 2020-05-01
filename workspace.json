@@ -58,8 +58,8 @@
     },
     "strapi-e2e": {
       "projectType": "application",
-      "root": "apps\\strapi-e2e",
-      "sourceRoot": "apps\\strapi-e2e/src",
+      "root": "apps/strapi-e2e",
+      "sourceRoot": "apps/strapi-e2e/src",
       "architect": {
         "e2e": {
           "builder": "@nrwl/nx-plugin:e2e",
