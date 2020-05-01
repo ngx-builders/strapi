@@ -5,7 +5,7 @@
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
-    "build": "nx build",
+    "build": "nx run strapi:build",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint strapi",
     "e2e": "nx e2e",
