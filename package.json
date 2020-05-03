@@ -42,22 +42,13 @@
     "dotenv": "8.2.0",
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.11.0",
-    "grunt": "^1.1.0",
-    "grunt-cleanempty": "^1.0.4",
-    "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-exec": "^3.0.0",
     "husky": "4.2.5",
     "jest": "25.5.3",
-    "load-grunt-configs": "^1.0.0",
     "prettier": "1.19.1",
     "ts-jest": "25.4.0",
     "ts-node": "7.0.1",
     "tslint": "6.1.2",
-    "ttypescript": "^1.5.10",
-    "typescript": "3.8.3",
-    "typescript-transform-paths": "^1.1.14",
-    "@nrwl/node": "9.2.3"
+    "typescript": "3.8.3"
   },
   "husky": {
     "hooks": {

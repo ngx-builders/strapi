@@ -25,12 +25,6 @@
     "strapi-e2e": {
       "tags": [],
       "implicitDependencies": ["strapi"]
-    },
-    "strapi-node": {
-      "tags": []
-    },
-    "ts-example": {
-      "tags": []
     }
   }
 }

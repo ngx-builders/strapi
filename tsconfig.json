@@ -16,8 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@ngx-builders/strapi": ["libs/strapi/src/index.ts"],
-      "@ngx-builders/ts-example": ["libs/ts-example/src/index"]
+      "@ngx-builders/strapi": ["libs/strapi/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
