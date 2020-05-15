@@ -52,7 +52,7 @@
     "load-grunt-configs": "1.0.0",
     "prettier": "2.0.5",
     "ts-jest": "25.4.0",
-    "ts-node": "7.0.1",
+    "ts-node": "8.10.1",
     "tslint": "6.1.2",
     "ttypescript": "1.5.10",
     "typescript": "3.9.2",
