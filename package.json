@@ -50,7 +50,7 @@
     "husky": "4.2.5",
     "jest": "25.5.3",
     "load-grunt-configs": "1.0.0",
-    "prettier": "1.19.1",
+    "prettier": "2.0.5",
     "ts-jest": "25.4.0",
     "ts-node": "7.0.1",
     "tslint": "6.1.2",
