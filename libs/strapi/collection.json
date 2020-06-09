@@ -8,8 +8,15 @@
       "schema": "./src/schematics/strapi/schema.json",
       "description": "strapi schematic"
     },
+    "init": {
+      "factory": "./src/schematics/init/init",
+      "schema": "./src/schematics/init/schema.json",
+      "description": "Initialize the @nrwl/strapi plugin",
+      "aliases": ["ng-add"],
+      "hidden": true
+    },
     "application": {
-      "factory": "./src/schematics/application/inded",
+      "factory": "./src/schematics/application/application",
       "schema": "./src/schematics/application/schema.json",
       "description": "strapi app schematic",
       "aliases": ["app"]
