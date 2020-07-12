@@ -151,34 +151,6 @@
           }
         }
       }
-    },
-    "ts-example": {
-      "root": "libs/ts-example",
-      "sourceRoot": "libs/ts-example/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:lint",
-          "options": {
-            "linter": "eslint",
-            "config": "libs/ts-example/.eslintrc",
-            "tsConfig": [
-              "libs/ts-example/tsconfig.lib.json",
-              "libs/ts-example/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!libs/ts-example/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/ts-example/jest.config.js",
-            "tsConfig": "libs/ts-example/tsconfig.spec.json",
-            "passWithNoTests": true
-          }
-        }
-      }
     }
   },
   "cli": {

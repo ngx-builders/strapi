@@ -28,9 +28,6 @@
     },
     "strapi-node": {
       "tags": []
-    },
-    "ts-example": {
-      "tags": []
     }
   }
 }

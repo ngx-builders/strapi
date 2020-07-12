@@ -1,193 +1,142 @@
+import { join, normalize, } from '@angular-devkit/core';
 import {
   apply,
+  applyTemplates,
   chain,
-  externalSchematic,
   mergeWith,
   move,
-  noop,
   Rule,
-  SchematicContext,
-  template,
-  Tree,
   url,
 } from '@angular-devkit/schematics';
-import { join, normalize, Path } from '@angular-devkit/core';
-import { Schema } from './schema';
 import {
-  updateJsonInTree,
-  updateWorkspaceInTree,
+  addProjectToNxJsonInTree,
+  formatFiles,
   generateProjectLint,
-  addLintFiles,
+  Linter,
+  names,
+  projectRootDir,
+  ProjectType,
+  toFileName,
+  updateWorkspaceInTree,
 } from '@nrwl/workspace';
-import { toFileName } from '@nrwl/workspace';
-import { getProjectConfig } from '@nrwl/workspace';
-import { offsetFromRoot } from '@nrwl/workspace';
+import { StrapiSchematicSchema as Schema } from './schema';
+
+
 import init from '../init/init';
-import { appsDir } from '@nrwl/workspace/src/utils/ast-utils';
+
+
+const projectType = ProjectType.Application;
 
 interface NormalizedSchema extends Schema {
-  appProjectRoot: Path;
+  projectName: string;
+  projectRoot: string;
+  projectDirectory: string;
   parsedTags: string[];
 }
 
-function updateNxJson(options: NormalizedSchema): Rule {
-  return updateJsonInTree(`/nx.json`, (json) => {
-    return {
-      ...json,
-      projects: {
-        ...json.projects,
-        [options.name]: { tags: options.parsedTags },
-      },
-    };
-  });
-}
-
-function getBuildConfig(project: any, options: NormalizedSchema) {
-  return {
-    builder: '@nrwl/strapi:build',
-    options: {
-      outputPath: join(normalize('dist'), options.appProjectRoot),
-      main: join(project.sourceRoot, 'main.ts'),
-      tsConfig: join(options.appProjectRoot, 'tsconfig.app.json'),
-      assets: [join(project.sourceRoot, 'assets')],
-    },
-    configurations: {
-      production: {
-        optimization: true,
-        extractLicenses: true,
-        inspect: false,
-        fileReplacements: [
-          {
-            replace: join(project.sourceRoot, 'environments/environment.ts'),
-            with: join(project.sourceRoot, 'environments/environment.prod.ts'),
-          },
-        ],
-      },
-    },
-  };
-}
-
-function getServeConfig(options: NormalizedSchema) {
-  return {
-    builder: '@nrwl/node:execute',
-    options: {
-      buildTarget: `${options.name}:build`,
-    },
-  };
-}
-
-function updateWorkspaceJson(options: NormalizedSchema): Rule {
-  return updateWorkspaceInTree((workspaceJson) => {
-    const project = {
-      root: options.appProjectRoot,
-      sourceRoot: join(options.appProjectRoot, 'src'),
-      projectType: 'application',
-      prefix: options.name,
-      schematics: {},
-      architect: <any>{},
-    };
-
-    project.architect.build = getBuildConfig(project, options);
-    project.architect.serve = getServeConfig(options);
-    project.architect.lint = generateProjectLint(
-      normalize(project.root),
-      join(normalize(project.root), 'tsconfig.app.json'),
-      options.linter
-    );
-
-    workspaceJson.projects[options.name] = project;
-
-    workspaceJson.defaultProject = workspaceJson.defaultProject || options.name;
-
-    return workspaceJson;
-  });
-}
 
 function addAppFiles(options: NormalizedSchema): Rule {
   return mergeWith(
     apply(url(`./files`), [
-      template({
-        tmpl: '',
-        name: options.name,
-        root: options.appProjectRoot,
+      applyTemplates({
+        ...options,
+        ...names(options.name),
       }),
-      move(join(options.appProjectRoot, 'src')),
+      move(options.projectRoot),
     ])
   );
 }
 
-function addProxy(options: NormalizedSchema): Rule {
-  return (host: Tree, context: SchematicContext) => {
-    const projectConfig = getProjectConfig(host, options.frontendProject);
-    if (projectConfig.architect && projectConfig.architect.serve) {
-      const pathToProxyFile = `${projectConfig.root}/proxy.conf.json`;
-      host.create(
-        pathToProxyFile,
-        JSON.stringify(
-          {
-            '/api': {
-              target: 'http://localhost:3333',
-              secure: false,
-            },
-          },
-          null,
-          2
-        )
-      );
 
-      updateWorkspaceInTree((json) => {
-        projectConfig.architect.serve.options.proxyConfig = pathToProxyFile;
-        json.projects[options.frontendProject] = projectConfig;
-        return json;
-      })(host, context);
-    }
-  };
+function addProject(options: NormalizedSchema): Rule {
+  return updateWorkspaceInTree((json) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const architect: { [key: string]: any } = {};
+
+    architect.build = {
+      builder: '@nrwl/strapi:build',
+      options: {
+        outputPath: `${options.projectRoot}/public`,
+        uglify: true,
+        color: true,
+        profile: false,
+      },
+      configurations: {
+        production: {},
+      },
+    };
+
+    architect.serve = {
+      builder: '@nrwl/strapi:server',
+      options: {
+        buildTarget: `${options.projectName}:build`,
+      },
+      configurations: {
+        production: {
+          buildTarget: `${options.projectName}:build:production`,
+        },
+      },
+    };
+
+    architect.lint = generateProjectLint(
+      normalize(options.projectRoot),
+      join(normalize(options.projectRoot), 'tsconfig.json'),
+      Linter.EsLint
+    );
+
+    json.projects[options.projectName] = {
+      root: options.projectRoot,
+      sourceRoot: `${options.projectRoot}/src`,
+      projectType,
+      schematics: {},
+      architect,
+    };
+
+    json.defaultProject = json.defaultProject || options.projectName;
+
+    return json;
+  });
 }
 
-export default function (schema: Schema): Rule {
-  return (host: Tree, context: SchematicContext) => {
-    const options = normalizeOptions(host, schema);
-    return chain([
-      init({
-        ...options,
-        skipFormat: true,
-      }),
-      addLintFiles(options.appProjectRoot, options.linter),
-      addAppFiles(options),
-      updateWorkspaceJson(options),
-      updateNxJson(options),
-      options.unitTestRunner === 'jest'
-        ? externalSchematic('@nrwl/jest', 'jest-project', {
-            project: options.name,
-            setupFile: 'none',
-            skipSerializers: true,
-          })
-        : noop(),
-      options.frontendProject ? addProxy(options) : noop(),
-    ])(host, context);
-  };
-}
-
-function normalizeOptions(host: Tree, options: Schema): NormalizedSchema {
-  const appDirectory = options.directory
-    ? `${toFileName(options.directory)}/${toFileName(options.name)}`
-    : toFileName(options.name);
-
-  const appProjectName = appDirectory.replace(new RegExp('/', 'g'), '-');
-
-  const appProjectRoot = join(normalize(appsDir(host)), appDirectory);
-
+function normalizeOptions(
+  options: Schema
+): NormalizedSchema {
+  const name = toFileName(options.name);
+  const projectDirectory = options.directory
+    ? `${toFileName(options.directory)}/${name}`
+    : name;
+  const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
+  const projectRoot = `${projectRootDir(projectType)}/${projectDirectory}`;
   const parsedTags = options.tags
     ? options.tags.split(',').map((s) => s.trim())
     : [];
 
   return {
     ...options,
-    name: toFileName(appProjectName),
-    frontendProject: options.frontendProject
-      ? toFileName(options.frontendProject)
-      : undefined,
-    appProjectRoot,
+    projectName,
+    projectRoot,
+    projectDirectory,
     parsedTags,
   };
 }
+
+
+export default function (options: NormalizedSchema): Rule {
+  const normalizedOptions = normalizeOptions(options);
+  //  const options = normalizeOptions(host, schema);
+  return chain([
+    init({
+      ...options,
+      skipFormat: true,
+    }),
+    addProject(normalizedOptions),
+    addProjectToNxJsonInTree(normalizedOptions.projectName, {
+      tags: normalizedOptions.parsedTags,
+    }),
+    // addLintFiles(options.appProjectRoot, options.linter),
+    addAppFiles(normalizedOptions),
+    formatFiles(),
+  ]);
+};
+
+

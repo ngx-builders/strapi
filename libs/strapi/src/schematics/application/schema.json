@@ -22,6 +22,12 @@
       "type": "string",
       "description": "A directory where the project is placed",
       "alias": "d"
+    },
+    "unitTestRunner": {
+      "description": "Adds the specified unit test runner",
+      "type": "string",
+      "enum": ["jest", "none"],
+      "default": "jest"
     }
   },
   "required": ["name"]

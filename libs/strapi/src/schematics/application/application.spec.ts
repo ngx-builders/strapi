@@ -1,27 +1,25 @@
 import { Tree } from '@angular-devkit/schematics';
 import { createEmptyWorkspace } from '@nrwl/workspace/testing';
-import { runSchematic } from '../../utils/testing';
-import { readJsonInTree } from '@nrwl/workspace';
+import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
+import { join } from 'path';
 
 describe('app', () => {
   let appTree: Tree;
-
+  const runner = new SchematicTestRunner(
+    '@ngx-builders/strapi',
+    join(__dirname, '../../../collection.json')
+  );
   beforeEach(() => {
     appTree = Tree.empty();
     appTree = createEmptyWorkspace(appTree);
   });
 
   it('should generate files', async () => {
-    const tree = await runSchematic('app', { name: 'myNodeApp' }, appTree);
-    expect(tree.readContent('apps/my-node-app/src/main.ts')).toContain(
-      `await NestFactory.create(AppModule);`
+    const tree = await runner.runSchematic('app', { name: 'myStarpiApp' }, appTree);
+    console.log(tree.files);
+    expect(tree.readContent('apps/my-strapi-app/main.ts')).toContain(
+      `import strapi from 'strapi'`
     );
-    expect(tree.exists('apps/my-node-app/src/app/app.module.ts')).toBeTruthy();
   });
 
-  it('should have es2015 as the tsconfig target', async () => {
-    const tree = await runSchematic('app', { name: 'myNodeApp' }, appTree);
-    const tsconfig = readJsonInTree(tree, 'apps/my-node-app/tsconfig.json');
-    expect(tsconfig.compilerOptions.target).toBe('es2015');
-  });
 });

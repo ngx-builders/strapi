@@ -1,10 +1,11 @@
+import { JsonObject } from '@angular-devkit/core';
 import { chain, noop, Rule } from '@angular-devkit/schematics';
 import {
   addDepsToPackageJson,
   addPackageWithInit,
   formatFiles,
   setDefaultCollection,
-  updateJsonInTree,
+  updateWorkspace,
 } from '@nrwl/workspace';
 import { Schema } from './schema';
 
@@ -26,23 +27,39 @@ export const updateDependencies = addDepsToPackageJson(
   }, {}
 );
 
-function moveDependency(): Rule {
-  return updateJsonInTree('package.json', (json) => {
-    json.dependencies = json.dependencies || {};
 
-    delete json.dependencies['@nrwl/nest'];
-    return json;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function jsonIdentity(x: any): JsonObject {
+  return x as JsonObject;
+}
+
+function setDefault(): Rule {
+  const updateProjectWorkspace = updateWorkspace((workspace) => {
+    workspace.extensions.schematics =
+      jsonIdentity(workspace.extensions.schematics) || {};
+
+    const strapiSchematics =
+      jsonIdentity(workspace.extensions.schematics['@nrwl/strapi']) || {};
+
+    workspace.extensions.schematics = {
+      ...workspace.extensions.schematics,
+      '@nrwl/strapi': {
+        application: {
+          ...jsonIdentity(strapiSchematics.application),
+        },
+      },
+    };
   });
+  return chain([setDefaultCollection('@nrwl/gatsby'), updateProjectWorkspace]);
 }
 
 export default function (schema: Schema) {
   return chain([
-    setDefaultCollection('@nrwl/strapi'),
+    setDefault(),
     schema.unitTestRunner === 'jest'
       ? addPackageWithInit('@nrwl/jest')
       : noop(),
     updateDependencies,
-    moveDependency(),
     formatFiles(schema),
   ]);
 }
