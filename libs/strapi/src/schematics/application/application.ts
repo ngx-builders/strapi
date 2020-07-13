@@ -54,35 +54,72 @@ function addProject(options: NormalizedSchema): Rule {
     const architect: { [key: string]: any } = {};
 
     architect.build = {
-      builder: '@nrwl/strapi:build',
+      builder: '@nrwl/workspace:run-commands',
       options: {
-        outputPath: `${options.projectRoot}/public`,
-        uglify: true,
-        color: true,
-        profile: false,
-      },
-      configurations: {
-        production: {},
-      },
+        commands: [
+          {
+            command: `cd ${options.projectRoot}/src && yarn`
+          },
+          {
+            command: `cd ${options.projectRoot}/src && NODE_OPTIONS=\"-r ./strapi-typescript/register\" NODE_ENV=\"production\" node main build`
+          },
+          {
+            command: "yarn global add grunt-cli"
+          },
+          {
+            command: `grunt --gruntfile=${options.projectRoot}/Gruntfile.js build`
+          }
+        ],
+        parallel: false
+      }
+    };
+
+    architect.develop = {
+      builder: "@nrwl/workspace:run-commands",
+      options: {
+        commands: [
+          {
+            command: "yarn"
+          },
+          {
+            command: "NODE_OPTIONS=\"-r ./strapi-typescript/register\" yarn develop"
+          }
+        ],
+        cwd: `${options.projectRoot}/src`,
+        parallel: false
+      }
     };
 
     architect.serve = {
-      builder: '@nrwl/strapi:server',
+      builder: '@nrwl/workspace:run-commands',
       options: {
-        buildTarget: `${options.projectName}:build`,
-      },
-      configurations: {
-        production: {
-          buildTarget: `${options.projectName}:build:production`,
-        },
-      },
+        commands: [
+          {
+            command: "yarn"
+          },
+          {
+            command: "NODE_OPTIONS=\"-r ./strapi-typescript/register\" yarn start"
+          }
+        ],
+        cwd: `${options.projectRoot}/src`,
+        parallel: false
+      }
     };
 
     architect.lint = generateProjectLint(
       normalize(options.projectRoot),
-      join(normalize(options.projectRoot), 'tsconfig.json'),
+      join(normalize(options.projectRoot), 'tsconfig.app.json', 'tsconfig.spec.json'),
       Linter.EsLint
     );
+
+    architect.test = {
+      builder: "@nrwl/jest:jest",
+      options: {
+        jestConfig: `${options.projectRoot}/jest.config.js`,
+        tsConfig: `${options.projectRoot}/tsconfig.spec.json`,
+        passWithNoTests: true
+      }
+    };
 
     json.projects[options.projectName] = {
       root: options.projectRoot,
