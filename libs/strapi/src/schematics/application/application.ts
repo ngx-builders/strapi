@@ -3,8 +3,10 @@ import {
   apply,
   applyTemplates,
   chain,
+  externalSchematic,
   mergeWith,
   move,
+  noop,
   Rule,
   url,
 } from '@angular-devkit/schematics';
@@ -19,6 +21,7 @@ import {
   toFileName,
   updateWorkspaceInTree,
 } from '@nrwl/workspace';
+import { updateJestConfigContent } from '@nrwl/react/src/utils/jest-utils';
 import { StrapiSchematicSchema as Schema } from './schema';
 
 
@@ -157,6 +160,29 @@ function normalizeOptions(
   };
 }
 
+function addJest(options: NormalizedSchema): Rule {
+  return options.unitTestRunner === 'jest'
+    ? externalSchematic('@nrwl/jest', 'jest-project', {
+        project: options.projectName,
+        supportTsx: true,
+        skipSerializers: true,
+        setupFile: 'none',
+        babelJest: false,
+      })
+    : noop();
+}
+
+function updateJestConfig(options: NormalizedSchema) {
+  return options.unitTestRunner === 'none'
+    ? noop()
+    : (host) => {
+        const appProjectRoot = `${options.projectRoot}`;
+        const configPath = `${appProjectRoot}/jest.config.js`;
+        const originalContent = host.read(configPath).toString();
+        const content = updateJestConfigContent(originalContent);
+        host.overwrite(configPath, content);
+      };
+}
 
 export default function (options: NormalizedSchema): Rule {
   const normalizedOptions = normalizeOptions(options);
@@ -172,6 +198,8 @@ export default function (options: NormalizedSchema): Rule {
     }),
     // addLintFiles(options.appProjectRoot, options.linter),
     addAppFiles(normalizedOptions),
+    addJest(normalizedOptions),
+    updateJestConfig(normalizedOptions),
     formatFiles(),
   ]);
 };
