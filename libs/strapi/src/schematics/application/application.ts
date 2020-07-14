@@ -160,29 +160,27 @@ function normalizeOptions(
   };
 }
 
-function addJest(options: NormalizedSchema): Rule {
-  return options.unitTestRunner === 'jest'
-    ? externalSchematic('@nrwl/jest', 'jest-project', {
-        project: options.projectName,
-        supportTsx: true,
-        skipSerializers: true,
-        setupFile: 'none',
-        babelJest: false,
-      })
-    : noop();
-}
+// function addJest(options: NormalizedSchema): Rule {
+//   return options.unitTestRunner === 'jest'
+//     ? externalSchematic('@nrwl/jest', 'jest-project', {
+//       jestConfig: `${options.projectRoot}/jest.config.js`,
+//       tsConfig: `${options.projectRoot}/tsconfig.spec.json`,
+//       passWithNoTests: true
+//     })
+//     : noop();
+// }
 
-function updateJestConfig(options: NormalizedSchema) {
-  return options.unitTestRunner === 'none'
-    ? noop()
-    : (host) => {
-        const appProjectRoot = `${options.projectRoot}`;
-        const configPath = `${appProjectRoot}/jest.config.js`;
-        const originalContent = host.read(configPath).toString();
-        const content = updateJestConfigContent(originalContent);
-        host.overwrite(configPath, content);
-      };
-}
+// function updateJestConfig(options: NormalizedSchema) {
+//   return options.unitTestRunner === 'none'
+//     ? noop()
+//     : (host) => {
+//       const appProjectRoot = `${options.projectRoot}`;
+//       const configPath = `${appProjectRoot}/jest.config.js`;
+//       const originalContent = host.read(configPath).toString();
+//       const content = updateJestConfigContent(originalContent);
+//       host.overwrite(configPath, content);
+//     };
+// }
 
 export default function (options: NormalizedSchema): Rule {
   const normalizedOptions = normalizeOptions(options);
@@ -198,8 +196,6 @@ export default function (options: NormalizedSchema): Rule {
     }),
     // addLintFiles(options.appProjectRoot, options.linter),
     addAppFiles(normalizedOptions),
-    addJest(normalizedOptions),
-    updateJestConfig(normalizedOptions),
     formatFiles(),
   ]);
 };
