@@ -56,7 +56,7 @@
     "tslint": "6.1.2",
     "ttypescript": "1.5.10",
     "typescript": "3.9.2",
-    "typescript-transform-paths": "1.1.14",
+    "typescript-transform-paths": "1.1.15",
     "@nrwl/node": "9.5.1"
   },
   "husky": {
