@@ -48,7 +48,7 @@
     "grunt-contrib-copy": "1.0.0",
     "grunt-exec": "3.0.0",
     "husky": "4.3.8",
-    "jest": "26.1.0",
+    "jest": "26.6.3",
     "load-grunt-configs": "1.0.0",
     "prettier": "2.2.1",
     "ts-jest": "26.5.0",
