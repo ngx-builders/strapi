@@ -9,11 +9,11 @@
     "build": "node main build"
   },
   "devDependencies": {
-    "@types/koa": "2.11.3"
+    "@types/koa": "2.11.7"
   },
   "dependencies": {
     "knex": "0.21.17",
-    "koa": "2.13.0",
+    "koa": "2.13.1",
     "module-alias": "2.2.2",
     "sqlite3": "latest",
     "strapi": "3.4.5",
