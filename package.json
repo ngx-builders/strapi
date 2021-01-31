@@ -28,8 +28,8 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "@commitlint/cli": "9.1.1",
-    "@commitlint/config-conventional": "9.1.1",
+    "@commitlint/cli": "9.1.2",
+    "@commitlint/config-conventional": "9.1.2",
     "@nrwl/eslint-plugin-nx": "10.0.11",
     "@nrwl/jest": "10.0.11",
     "@nrwl/nx-plugin": "10.0.11",
