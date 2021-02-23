@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "skipLibCheck": true,
+    "module": "commonjs",
+    "target": "esnext",
+    "outDir": "../../dist",
+    "plugins": [{ "transform": "typescript-transform-paths" }],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": [
+    "src/node_modules", "src/build"
+  ]
+}

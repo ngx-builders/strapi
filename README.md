@@ -1,79 +1,61 @@
-# NgxBuilders
+# Strapi (Nx Plugin)
 
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
-![Node.js CI](https://github.com/ngx-builders/strapi/workflows/Node.js%20CI/badge.svg?branch=master)
+<p align="center">
+  <a href="https://strapi.io">
+    <img src="https://strapi.io/assets/strapi-logo-dark.svg" width="318px" alt="Strapi logo" />
+  </a>
+</p>
 
-This project was generated using [Nx](https://nx.dev).
+<p align="center">
+  <a href="https://www.npmjs.com/package/@ngx-builders/strapi">
+    <img src="https://img.shields.io/npm/v/strapi/latest.svg" alt="NPM Version" />
+  </a>
+  <a href="https://www.npmjs.com/package/@ngx-builders/strapi">
+    <img src="https://img.shields.io/npm/dm/strapi.svg" alt="Monthly download on NPM" />
+  </a>
+  <a>
+    <img src="https://github.com/ngx-builders/strapi/workflows/Node.js%20CI/badge.svg?branch=master" alt="Node.js CI" />
+  </a>
+</p>
 
-<p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/nx-logo.png" width="450"></p>
+### Nx plugin for developing [Strapi](https://strapi.io/) application in NX workspace.
+***
+<br />
 
-🔎 **Nx is a set of Extensible Dev Tools for Monorepos.**
+## ⏳ Usage
 
-## Adding capabilities to your workspace
+Add this plugin to an Nx workspace:
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+```
+yarn add --dev @ngx-builders/strapi
+```
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+or
 
-Below are some plugins which you can add to your workspace:
+```
+npm install @ngx-builders/strapi --save-dev
+```
+<br />
 
-- [React](https://reactjs.org)
-  - `npm install --save-dev @nrwl/react`
-- Web (no framework frontends)
-  - `npm install --save-dev @nrwl/web`
-- [Angular](https://angular.io)
-  - `npm install --save-dev @nrwl/angular`
-- [Nest](https://nestjs.com)
-  - `npm install --save-dev @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `npm install --save-dev @nrwl/express`
-- [Node](https://nodejs.org)
-  - `npm install --save-dev @nrwl/node`
+## 🌟 Project schematics
 
-## Generate an application
+Initialize Strapi in your Nx workspace:-
 
-Run `nx g @nrwl/react:app my-app` to generate an application.
+```
+nx g @ngx-builders/strapi:init
+```
 
-> You can use any of the plugins above to generate applications as well.
+Generate Strapi application:-
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+```
+nx g @ngx-builders/strapi:app <application-name>
+```
 
-## Generate a library
+<br />
 
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
+## 🏃 Run your application
 
-> You can also use any of the plugins above to generate libraries as well.
-
-Libraries are sharable across libraries and applications. They can be imported from `@ngx-builders/mylib`.
-
-## Development server
-
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
-
-## Build
-
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
-
-Run `nx affected:test` to execute the unit tests affected by a change.
-
-## Running end-to-end tests
-
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
-
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
-
-## Understand your workspace
-
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev) to learn more.
+```
+nx build <application-name>
+nx start <application-name>
+```
