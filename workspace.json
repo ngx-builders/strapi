@@ -1,54 +1,54 @@
 {
-  "version": 1,
+  "version": 2,
   "projects": {
     "strapi": {
-      "root": "libs/strapi",
-      "sourceRoot": "libs/strapi/src",
+      "root": "packages/strapi",
+      "sourceRoot": "packages/strapi/src",
       "projectType": "library",
-      "schematics": {},
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:lint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
-            "linter": "eslint",
-            "config": "libs/strapi/.eslintrc",
-            "tsConfig": [
-              "libs/strapi/tsconfig.lib.json",
-              "libs/strapi/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!libs/strapi/**"]
+            "lintFilePatterns": [
+              "packages/strapi/**/*.ts"
+            ]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/packages/strapi"
+          ],
           "options": {
-            "jestConfig": "libs/strapi/jest.config.js",
-            "tsConfig": "libs/strapi/tsconfig.spec.json",
+            "jestConfig": "packages/strapi/jest.config.js",
             "passWithNoTests": true
           }
         },
         "build": {
-          "builder": "@nrwl/node:package",
+          "executor": "@nrwl/node:package",
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
-            "outputPath": "dist/libs/strapi",
-            "tsConfig": "libs/strapi/tsconfig.lib.json",
-            "packageJson": "libs/strapi/package.json",
-            "main": "libs/strapi/src/index.ts",
+            "outputPath": "dist/packages/strapi",
+            "tsConfig": "packages/strapi/tsconfig.lib.json",
+            "packageJson": "packages/strapi/package.json",
+            "main": "packages/strapi/src/index.ts",
             "assets": [
-              "libs/strapi/*.md",
+              "packages/strapi/*.md",
               {
-                "input": "./libs/strapi/src",
+                "input": "./packages/strapi/src",
                 "glob": "**/*.!(ts)",
                 "output": "./src"
               },
               {
-                "input": "./libs/strapi",
-                "glob": "collection.json",
+                "input": "./packages/strapi",
+                "glob": "generators.json",
                 "output": "."
               },
               {
-                "input": "./libs/strapi",
-                "glob": "builders.json",
+                "input": "./packages/strapi",
+                "glob": "executors.json",
                 "output": "."
               }
             ]
@@ -58,159 +58,22 @@
     },
     "strapi-e2e": {
       "projectType": "application",
-      "root": "apps/strapi-e2e",
-      "sourceRoot": "apps/strapi-e2e/src",
-      "architect": {
+      "root": "e2e\\strapi-e2e",
+      "sourceRoot": "e2e\\strapi-e2e/src",
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/nx-plugin:e2e",
+          "executor": "@nrwl/nx-plugin:e2e",
           "options": {
             "target": "strapi:build",
             "npmPackageName": "@ngx-builders/strapi",
-            "pluginOutputPath": "dist/libs/strapi",
-            "jestConfig": "apps/strapi-e2e/jest.config.js",
-            "tsSpecConfig": "apps/strapi-e2e/tsconfig.spec.json"
-          }
-        }
-      }
-    },
-    "strapi-node": {
-      "root": "apps/strapi-node",
-      "sourceRoot": "apps/strapi-node/src",
-      "projectType": "application",
-      "prefix": "strapi-node",
-      "schematics": {},
-      "architect": {
-        "build": {
-          "builder": "@nrwl/workspace:run-commands",
-          "options": {
-            "commands": [
-              {
-                "command": "cd apps/strapi-node/src && yarn"
-              },
-              {
-                "command": "cd apps/strapi-node/src && NODE_OPTIONS=\"-r ./strapi-typescript/register\" NODE_ENV=\"production\" node main build"
-              },
-              {
-                "command": "yarn global add grunt-cli"
-              },
-              {
-                "command": "grunt --gruntfile=apps/strapi-node/Gruntfile.js build"
-              }
-            ],
-            "parallel": false
-          }
-        },
-        "develop": {
-          "builder": "@nrwl/workspace:run-commands",
-          "options": {
-            "commands": [
-              {
-                "command": "yarn"
-              },
-              {
-                "command": "NODE_OPTIONS=\"-r ./strapi-typescript/register\" yarn develop"
-              }
-            ],
-            "cwd": "apps/strapi-node/src",
-            "parallel": false
-          }
-        },
-        "serve": {
-          "builder": "@nrwl/workspace:run-commands",
-          "options": {
-            "commands": [
-              {
-                "command": "yarn"
-              },
-              {
-                "command": "NODE_OPTIONS=\"-r ./strapi-typescript/register\" yarn start"
-              }
-            ],
-            "cwd": "apps/strapi-node/src",
-            "parallel": false
-          }
-        },
-        "lint": {
-          "builder": "@nrwl/linter:lint",
-          "options": {
-            "linter": "eslint",
-            "config": "apps/strapi-node/.eslintrc",
-            "tsConfig": [
-              "apps/strapi-node/tsconfig.app.json",
-              "apps/strapi-node/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!apps/strapi-node/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "apps/strapi-node/jest.config.js",
-            "tsConfig": "apps/strapi-node/tsconfig.spec.json",
-            "passWithNoTests": true
+            "pluginOutputPath": "dist/packages/strapi",
+            "jestConfig": "e2e/strapi-e2e/jest.config.js"
           }
         }
       }
     }
   },
   "cli": {
-    "defaultCollection": "@nrwl/node"
-  },
-  "schematics": {
-    "@nrwl/workspace": {
-      "library": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/cypress": {
-      "cypress-project": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/react": {
-      "application": {
-        "linter": "eslint"
-      },
-      "library": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/next": {
-      "application": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/web": {
-      "application": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/node": {
-      "application": {
-        "linter": "eslint"
-      },
-      "library": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/nx-plugin": {
-      "plugin": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/nest": {
-      "application": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/express": {
-      "application": {
-        "linter": "eslint"
-      },
-      "library": {
-        "linter": "eslint"
-      }
-    }
-  },
-  "defaultProject": "strapi-node"
+    "defaultCollection": "@nrwl/workspace"
+  }
 }

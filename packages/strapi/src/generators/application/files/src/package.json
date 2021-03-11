@@ -1,0 +1,24 @@
+{
+  "name": "src",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A Strapi application",
+  "scripts": {
+    "develop": "node main develop",
+    "start": "node main start",
+    "build": "node main build"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "author": {
+    "name": "A Strapi developer"
+  },
+  "strapi": {
+    "uuid": "e4190b2f-f720-4ed9-b30c-95e269a29893"
+  },
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
+}
