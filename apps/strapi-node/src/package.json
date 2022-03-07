@@ -12,7 +12,7 @@
     "@types/koa": "2.11.7"
   },
   "dependencies": {
-    "knex": "0.21.17",
+    "knex": "0.95.15",
     "koa": "2.13.1",
     "module-alias": "2.2.2",
     "sqlite3": "latest",
